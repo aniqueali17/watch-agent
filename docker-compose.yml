@@ -1,0 +1,29 @@
+# Start the container using:docker compose up --build
+# This handles the build, ports, volumes, and env vars in one shot.
+
+services:
+  watchagent:
+    # Build from the local Dockerfile instead of pulling a pre-built
+    # image, so anyone with the repo gets the exact same setup.
+    build: .
+
+    # Map container port 8000 to localhost:8000 on the host. The host
+    # port is on the left.
+    ports:
+      - "8000:8000"
+
+    # SQLite file lives in /data inside the container (see DB_PATH
+    # in the Dockerfile). Mounting a named volume there means the
+    # data sticks around between docker compose down and up.
+    volumes:
+      - watchagent-data:/data
+
+    # Auto-restart if the container crashes, but stay down when
+    # stopped on purpose (Ctrl+C or docker compose down).
+    restart: unless-stopped
+
+# Named volume declared at the top level. Docker picks the actual
+# location on disk, which keeps things portable across Windows,
+# macOS, and Linux.
+volumes:
+  watchagent-data:

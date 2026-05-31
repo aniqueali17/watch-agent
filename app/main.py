@@ -41,6 +41,17 @@ def on_startup():
     poller_thread.start()
     logger.info("startup complete, poller thread running")
 
+@app.get("/")
+def root():
+    """
+    Friendly landing page. Not part of the spec — just here so
+    visitors hitting the root URL aren't greeted with a 404.
+    """
+    return {
+        "service": "WatchAgent",
+        "endpoints": ["/health", "/readings", "/events", "/docs"],
+    }
+
 
 @app.get("/health")
 def health():

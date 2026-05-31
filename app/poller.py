@@ -56,7 +56,7 @@ def poll_once():
             continue  # already logged inside fetch_city
 
         # Use .get() rather than data["current"] so an unexpected response
-        # shape (200 OK but missing field) doesn't raise — we check below
+        # shape (200 OK but missing field) doesn't raise, we check below
         # and log instead.
         current = data.get("current")
         if current is None:

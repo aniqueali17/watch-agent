@@ -1,0 +1,23 @@
+# Don't copy local development clutter into the Docker image.
+
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+
+# Local SQLite database, the container creates its own on a volume.
+*.db
+
+# Git and CI metadata aren't needed inside the running image.
+.git
+.github
+
+# IDE files
+.vscode
+.idea
+
+# Local secrets
+.env
+
+# Editor-only Cursor configuration, irrelevant to the runtime.
+.cursor
