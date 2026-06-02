@@ -1,0 +1,17 @@
+---
+description: Only storage.py touches the database
+globs: ["app/**/*.py"]
+alwaysApply: true
+---
+
+# Storage isolation
+
+All database access goes through functions in `app/storage.py`. Other modules in `app/` must not:
+
+- Import `sqlite3` directly
+- Build or execute SQL strings
+- Open their own connections to the database file
+
+If you need a new query, add a function to `app/storage.py` (following the existing pattern: open connection, run SQL with `?` placeholders, return plain dicts via `sqlite3.Row`, close connection). Then call it from the module that needs the data.
+
+This keeps the database schema and connection logic in one place. Tests, the poller, the API, and the events module all go through storage. The data-analysis skill in `.cursor/skills/analyze.py` is the one exception because it runs as a standalone script outside the `app/` package.

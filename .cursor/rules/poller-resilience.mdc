@@ -1,0 +1,16 @@
+---
+description: One bad city must not crash the polling loop
+globs: ["app/poller.py"]
+alwaysApply: true
+---
+
+# Poller resilience
+
+The poller must never crash the polling loop because of a single failed city. Specifically:
+
+- HTTP errors (timeouts, 4xx, 5xx) inside `fetch_city` are caught with `except httpx.HTTPError`, logged at `WARNING` level with the city name and the exception message, and the function returns `None`.
+- The loop in `poll_once` checks for `None` from `fetch_city` and skips to the next city with `continue`.
+- Unexpected response shapes (missing `current` field, missing weather fields) are also logged at `WARNING` and skipped, not raised.
+- Successful new readings are logged at `INFO`; duplicate readings (the common case, since Open-Meteo updates hourly but we poll every 5 minutes) are logged at `DEBUG` so they don't drown out real signal.
+
+The poller runs on a background thread inside the same process as the API. A crash here would silently break data collection while the API kept serving stale data, which is the worst possible failure mode. Defensive logging-and-continue is the contract.

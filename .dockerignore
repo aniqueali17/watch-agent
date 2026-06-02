@@ -19,5 +19,3 @@ __pycache__
 # Local secrets
 .env
 
-# Editor-only Cursor configuration, irrelevant to the runtime.
-.cursor

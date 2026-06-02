@@ -1,0 +1,27 @@
+---
+description: Every event stores a complete, human-readable reason
+globs: ["app/events.py"]
+alwaysApply: true
+---
+
+# Event reasons must be specific
+
+Every event written to the database has a `reason` field. This field is what someone reviewing events via the `/events` endpoint actually reads. It must:
+
+- Be a complete sentence
+- Include the relevant numbers (the change, the threshold, the actual value)
+- Reference both the previous and current values when relevant (temperature swing)
+
+Examples of acceptable reasons:
+
+- `"Temperature rose 6.3°C since previous reading (was 18.1°C, now 24.4°C)"`
+- `"10.0 mm of precipitation in the past hour"`
+- `"Severe weather reported (WMO code 95)"`
+
+Examples that are not acceptable:
+
+- `"Event detected"`
+- `"Temperature changed"`
+- `"Weather alert"`
+
+The challenge brief states that every stored event must answer: what happened, in which city, when, and **why this was considered notable**. The `reason` field is the "why" and it carries most of the explanatory weight. When adding a new detector to `app/events.py`, the reason string is part of the design, not an after thought.
